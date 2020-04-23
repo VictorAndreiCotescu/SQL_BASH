@@ -13,7 +13,7 @@
 #| $$$$$$$/| $$$$$$$/      | $$| $$ \  $$      | $$       |  $$$$//$$      | $$$$$$$$| $$  | $$|  $$$$$$/| $$  | $$
 #|_______/ |_______/       |__/|__/  \__/      |__/        \___/ |__/      |________/|__/  |__/ \______/ |__/  |__/
 
-#collumns~gollumns~gollum~my_precious_code
+#collumns~gollums~gollum~my_precious_code
                                         
 echo off
 clear
@@ -49,10 +49,8 @@ function UPDATE(){
 	if test -f "${command[1]}"; then
 
    	tail -n +2 "${command[1]}"
-   	echo ""
-
-   	collumns=$(sed '2!d' "${command[1]}") ##ERRORKLASCNAO
-   	echo "${collumns[1]}"
+ 
+   	collumns=($(sed '2!d' "${command[1]}"))
 
    	nr_colls="$(wc -w <<< "$(sed '2!d' "${command[1]}")")"
    	nr_rows="$(wc -l < "${command[1]}")"
@@ -80,9 +78,6 @@ function UPDATE(){
    		colls_to_pe_upd[nr_colls_tbu]=${command[$i]}
    		upd_vals[nr_colls_tbu]="${command[$i+2]}"
 
-   		#echo "${colls_to_pe_upd[$nr_colls_tbu]}"
-   		#echo "${upd_vals[$nr_colls_tbu]}"
-
    		((nr_colls_tbu=nr_colls_tbu+1))
    	done
 
@@ -90,11 +85,12 @@ function UPDATE(){
    	nr_colls_cond=0
    	for ((j = index_whr+1; j < nr_words; j=j+3))
    	do
-   		cols_cond[nr_colls_cond]="${command[j]}"
-   		cond_val[nr_colls_cond]="${command[j+2]}"
+   		colls_cond[nr_colls_cond]="${command[$j]}"
 
-   		#echo "${cols_cond[nr_colls_cond]}"
-   		#echo "${cond_val[nr_colls_cond]}"
+
+   		cond_val[nr_colls_cond]="${command[$j+2]}"
+
+   		
 
    	((nr_colls_cond=nr_colls_cond+1))
    	done
@@ -103,26 +99,21 @@ function UPDATE(){
    	declare -a index_rows_meeting_cond
    	declare -a index_colls_with_cond
 
-   	ok=0;
+   	ok="false";
    	temp_index=0;
    	for ((i = 0; i < nr_colls; ++i))
    	do
 
-   		ok=0;
+   		ok="false";
 
    		for ((j = 0; j < nr_colls_cond; ++j))
    		do
    			if [ "${collumns[$i]}" == "${colls_cond[$j]}" ]; then
-   				echo "${collumns[$i]}"
-   				echo " = "
-   				echo "${colls_cond[$j]}"
-   				echo ""
-   				ok=1;
+   				ok="true"
    			fi
    		done
 
-   		if [ ok == 1 ]; then
-   			echo okok
+   		if [ "$ok" == "true" ]; then
    			index_colls_with_cond[temp_index]="$i"
    			((temp_index=temp_index+1))
    		fi
@@ -131,10 +122,8 @@ function UPDATE(){
    	
    	for((i = 0; i < nr_colls_cond; i++))
    	do
-   		echo ok
-   		echo "$nr_colls_cond"
-   		echo -n "${index_colls_with_cond[$i]}";
-
+   		echo "numarul coloanelor cu conditii $nr_colls_cond"
+   		echo "coloana cu conditie: ${index_colls_with_cond[$i]}";
    	done
 
    	
