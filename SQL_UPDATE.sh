@@ -19,7 +19,7 @@ echo off
 clear
 echo "Bash version ${BASH_VERSION}:01000010 01100010 00110100 01101011"
 echo ""
-echo "update table1 set col1 = val1 where colx = valx"
+echo "update table1 set AGE = 20 where NAME = DRAGOS"
 echo ""
 
 cd ~/Documents/SQL
@@ -90,9 +90,8 @@ function UPDATE(){
 
    		cond_val[nr_colls_cond]="${command[$j+2]}"
 
-   		
 
-   	((nr_colls_cond=nr_colls_cond+1))
+   		((nr_colls_cond=nr_colls_cond+1))
    	done
 
 
@@ -120,13 +119,26 @@ function UPDATE(){
 
    	done
    	
-   	for((i = 0; i < nr_colls_cond; i++))
-   	do
-   		echo "numarul coloanelor cu conditii $nr_colls_cond"
-   		echo "coloana cu conditie: ${index_colls_with_cond[$i]}";
-   	done
 
-   	
+   	declare -a row
+
+   	for ((i = 3; i <= nr_rows+2; ++i))
+   	do
+
+   		row=($(sed "${i}q;d" ${command[1]}))
+   		ok="true"
+
+   		for((j = 0; j < nr_colls_cond; ++j))
+   		do
+   			
+
+   			if [ "${row[${index_colls_with_cond[$j]}]}" == "${cond_val[j]}" ]; then
+   				echo "${cond_val[j]}"
+   				echo "${row[${index_colls_with_cond[$j]}]}"
+   			fi
+   		done
+
+   	done
 
 }
 
